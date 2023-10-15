@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 62ba60cf10554ca489d3f128543706c0
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - CUTE FROG
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: a47b897d8dc0380429388881209e72a2, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
