@@ -10,7 +10,7 @@ public class MoveOnPathScript : MonoBehaviour
 
     public int currentWayPoinID = 0;
     public float speed;
-    private float reachDistance = 1.0f;
+    public float reachDistance = 1.0f;
     public float rotationSpeed = 5.0f;
     
     

@@ -14,7 +14,7 @@ public class SoundManager : MonoBehaviour
     private AudioSource sourcePlayer;
    
     private float bookmark = 0;
-
+    /*
     void Awake()
     {
         Instance = this;
@@ -146,4 +146,6 @@ public class SoundManager : MonoBehaviour
         //float randomVol = Random.Range(0.5f, 1.0f);
         sourcePlayer.PlayOneShot(clip, 1);
     }
+
+    */
 }

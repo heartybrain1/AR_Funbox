@@ -11,6 +11,97 @@ using Unity.XR.CoreUtils;
 public class ARManager : MonoBehaviour
 {
 
+    public static ARManager Instance;
+
+    XROrigin arOrigin;
+
+    public ARRaycastManager arRaycater;
+    List<ARRaycastHit> hits = new List<ARRaycastHit>();
+
+    public bool isIndicatable = false;
+
+    public GameObject indicator;
+
+    bool isSpawned = false;
+    public ARPlaneManager arPlane;
+    public GameObject gamePrefab;
+
+    public GameObject spawnedObj;
+
+
+    public ARCameraManager arCameraManager;
+    public Light currentLight;
+  
+  
+    public  void getPrefab()
+    { 
+
+        string path1 = "Prefabs/";
+        Object[] objs = Resources.LoadAll(path1);
+
+        int count = objs.Length;
+
+        List<string> fileNames = new List<string>();
+        for (int i = 0; i < count; i++)
+        {
+
+            string str = objs[i].name;
+            fileNames.Add(str);
+            Debug.Log(str);
+        }
+
+
+        themeType myType = (themeType)GameManager.indexTheme;
+        string nameTheme = myType.ToString();
+        int index = GameManager.indexLevel;
+
+
+
+        string str1 = nameTheme;
+        string str2 = "theme";
+        string result = str1.Replace(str2, "");
+
+        string prefix = result + "_" + index.ToString();
+
+
+        string namePrefab = "";
+        string path2 = "";
+        for (int i = 0; i < count; i++)
+        {
+
+            if (fileNames[i].Contains(prefix))
+            {
+                namePrefab = fileNames[i];
+
+                break;
+
+
+            }
+
+        }
+
+
+        path2 = "Prefabs/" + namePrefab;
+        Debug.Log(namePrefab);
+        Debug.Log(path2);
+        gamePrefab = Resources.Load(path2) as GameObject;
+
+
+
+    }
+
+    public void updateTargePlaneValue()
+    {
+
+
+    }
+
+
+    private void Awake()
+    {
+        getPrefab();
+        Instance = this;
+    }
 
     void OnEnable()
     {
@@ -26,27 +117,104 @@ public class ARManager : MonoBehaviour
 
     void Update()
     {
-        PlacePrefab();
-        PlaceIndicator();
+        if(isIndicatable)
+        {
+            updateIndicator();
+        }
+        if (isSpawned)
+        {
+            //OnTouched();
+        }
+
+        
         //PlayerMove();
     }
 
-
-    #region 바닥에 프리팹 놓기
-
-    public ARRaycastManager arRaycater;
-    public GameObject spawnPrefab;
-    List<ARRaycastHit> hits = new List<ARRaycastHit>();
-
-
-
-    public void loadScene()
+    void updateIndicator()
     {
-        ARSession arsession = GameObject.Find("AR Session").GetComponent<ARSession>();
-        arsession.Reset();
-        SceneManager.LoadScene(0);
+        arRaycater.Raycast(new Vector2(Screen.width * 0.5f, Screen.height * 0.5f), hits, TrackableType.Planes);
+
+        if (hits.Count > 0)
+        {
+            indicator.transform.position = hits[0].pose.position;
+            indicator.transform.rotation = hits[0].pose.rotation;
+        }
     }
-    void PlacePrefab()
+
+    public void showOnIndicator()
+    {
+        string path = "temp/" + "Indicator";
+        GameObject obj = Resources.Load(path) as GameObject;
+        indicator =  Instantiate(obj, transform.position, Quaternion.identity);
+        isIndicatable = true ;
+
+    }
+    public void showOffIndicator()
+    {
+        indicator.SetActive(false);
+        isIndicatable = false;
+       
+    }
+
+
+    public void spawnGameObject()
+    {
+        Pose hitPose = hits[0].pose;
+        spawnedObj= Instantiate(gamePrefab, hitPose.position, Quaternion.identity);
+        isSpawned = true;
+    }
+
+
+
+    void OnTouched()
+    {
+        if (Input.touchCount == 0) return;
+
+        Touch touch = Input.GetTouch(0);
+        if (touch.phase != TouchPhase.Began) return;
+
+        Ray ray = Camera.main.ScreenPointToRay(touch.position);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
+        {
+            if (hit.collider.gameObject.CompareTag("Interactable"))
+            {
+                hit.collider.gameObject.GetComponent<Interactable>().OnTouchDetected();
+            }
+        }
+    }
+
+    /*
+
+     if (Input.touchCount > 0)
+        {
+            var touch = Input.GetTouch(0);
+            if (touch.phase == TouchPhase.Ended)
+            {
+                if (Input.touchCount == 1)
+                {
+                    Ray raycast = Camera.main.ScreenPointToRay(touch.position);
+                    if (Physics.Raycast(raycast, out RaycastHit raycastHit))
+                    {
+                        var planeAreaBehaviour =
+       raycastHit.collider.gameObject.GetComponent<PlaneAreaBehaviour>();
+                        if (planeAreaBehaviour != null)
+                        {
+                          //  planeAreaBehaviour.ToggleAreaView();
+                        }
+                    }
+
+                }
+            }
+        }
+   
+
+  */
+
+
+
+    /*
+    void PlacePrefabOld()
     {
         if (Input.touchCount == 0) return;
 
@@ -57,58 +225,10 @@ public class ARManager : MonoBehaviour
         {
             Pose hitPose = hits[0].pose;
             //Instantiate(spawnPrefab, hitPose.position, hitPose.rotation);
-
-            string str = temp_index.str;
-
-            string path1 = "Prefabs/" + str;
-
-            GameObject gamePrefab = Resources.Load(path1) as GameObject;
-          
             GameObject obj = Instantiate(gamePrefab, hitPose.position, Quaternion.identity);
-            //obj.transform.position = ars + transform.TransformDirection(Vector3.forward * 3);
-            //obj.transform.position = obj.transform.position + transform.TransformDirection(Vector3.forward*3);
-            // obj.transform.position = obj.transform.position + new Vector3(0, 0, 3);
-
         }
     }
 
-    #endregion
-
-
-    #region 바닥 활성화
-
-    public ARPlaneManager arPlane;
-
-    public void ShowPlane(bool b)
-    {
-        foreach (var plane in arPlane.trackables)
-            plane.gameObject.SetActive(b);
-    }
-
-    #endregion
-
-
-    #region 바닥 표시기
-
-    public Transform Indicator;
-    List<ARRaycastHit> indicatorHits = new List<ARRaycastHit>();
-
-    void PlaceIndicator()
-    {
-        arRaycater.Raycast(new Vector2(Screen.width * 0.5f, Screen.height * 0.5f), indicatorHits, TrackableType.Planes);
-
-        if (indicatorHits.Count > 0)
-        {
-            Indicator.position = indicatorHits[0].pose.position;
-            Indicator.rotation = indicatorHits[0].pose.rotation;
-        }
-    }
-
-    public void PlaceIndicatorPrefab()
-    {
-        Pose hitPose = indicatorHits[0].pose;
-        Instantiate(spawnPrefab, hitPose.position, hitPose.rotation);
-    }
 
     public void placeIndexPrefab()
     {
@@ -123,16 +243,25 @@ public class ARManager : MonoBehaviour
 
     }
 
-    #endregion
 
 
-    
+
+    */
 
 
-    #region 빛 감지
+    public void resetARSession()
+    {
+        ARSession arsession = GameObject.Find("AR Session").GetComponent<ARSession>();
+        arsession.Reset();
 
-    public ARCameraManager arCameraManager;
-    public Light currentLight;
+    }
+
+    public void ShowPlane(bool b)
+    {
+        foreach (var plane in arPlane.trackables)
+            plane.gameObject.SetActive(b);
+    }
+
 
     void FrameUpdated(ARCameraFrameEventArgs args)
     {
@@ -147,10 +276,14 @@ public class ARManager : MonoBehaviour
         }
     }
 
-    #endregion
+
+
+
+
 
 
     #region 이미지 감지
+
 
     public ARTrackedImageManager arImageManager;
 
@@ -169,13 +302,15 @@ public class ARManager : MonoBehaviour
     }
 
     #endregion
-    XROrigin arOrigin;
+
+
 
     #region 플레이어를 중심으로 이동
 
     public NavMeshAgent agent;
     public GameObject TouchParticle;
 
+   
     public void MoveTarget()
     {
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out RaycastHit hit))
@@ -218,11 +353,12 @@ public class ARManager : MonoBehaviour
 
     #endregion
 }
-
 public static class PlayerPos
 {
     public static Vector3 playerPos;
 }
+
+
 
 
 

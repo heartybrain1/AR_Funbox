@@ -5,6 +5,9 @@ using UnityEngine;
 [System.Serializable]
 public class PlayerData
 {
+    public int life;
+    public ulong chest;
+    /*
     public float hp;
     public float mana;
     public float manaRatio;
@@ -50,6 +53,6 @@ public class PlayerData
     public int totalScore1;
     public int totalScore2;
 
-   
+   */
    
 }

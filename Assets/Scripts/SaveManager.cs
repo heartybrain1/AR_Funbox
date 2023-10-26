@@ -50,6 +50,10 @@ public class SaveManager : MonoBehaviour
        
         playerData = new PlayerData();
 
+        playerData.life = 3;
+        playerData.chest = 0;
+
+        /*
         playerData.hp = 100;
         playerData.mana = 100;
         playerData.manaRatio = 0.02f;
@@ -154,6 +158,6 @@ public class SaveManager : MonoBehaviour
         }
 
 
-        
+        */
     }
 }

@@ -8,6 +8,7 @@ public class EditorPathScript : MonoBehaviour
     public List<Transform> path_objs = new List<Transform>();
     Transform[] theArray;
 
+    public float radius;
 
     private void OnDrawGizmos()
     {
@@ -30,7 +31,7 @@ public class EditorPathScript : MonoBehaviour
             {
                 Vector3 previous = path_objs[i - 1].position;
                 Gizmos.DrawLine(previous, position);
-                Gizmos.DrawWireSphere(position, 1f);
+                Gizmos.DrawWireSphere(position, radius);
 
             }
 

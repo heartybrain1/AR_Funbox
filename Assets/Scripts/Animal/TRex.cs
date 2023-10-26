@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TRex : MonoBehaviour
+public class TRex : Interactable
 {
     Transform tPlayer;
     Animator animator;
@@ -13,6 +13,15 @@ public class TRex : MonoBehaviour
     AudioClip audioRoar3;
     AudioSource audioSource;
     // Start is called before the first frame update
+
+    protected override void interaction()
+    {
+        Debug.Log("");
+
+    }
+
+
+
     void Start()
     {
         tPlayer = GameObject.FindGameObjectWithTag("Player").transform;

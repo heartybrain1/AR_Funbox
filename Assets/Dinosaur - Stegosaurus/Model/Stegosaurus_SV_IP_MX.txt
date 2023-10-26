@@ -1,0 +1,25 @@
+0000-0001 Bind Pose
+0003-0163 loop Idle
+0166-0231 loop Fight Idle
+0234-0253 loop Hit Left
+0254-0273 loop Hit Right
+0274-0293 loop Hit Front
+0294-0313 loop Hit Back
+0315-0344 Death
+0346-0379 loop Attack Left Leg
+0382-0415 loop Attack Right Leg
+0418-0447 loop Attack Tail Left Side
+0450-0479 loop Attack Tail Right Side
+0482-0527 loop Walk
+0530-0551 loop Run
+0554-0601 Start Sleeping
+0602-0661 loop Sleeping
+0662-0709 End Sleeping
+0710-0739 Start Eating
+0740-0800 loop Eating
+0801-0830 End Eating  
+
+
+
+
+
